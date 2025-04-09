@@ -1,16 +1,96 @@
-PO CARRE :LONGUEUR
-  REPEAT 4 
-[ 
-FORWARD :LONGUEUR 
-TR 90 
-]
+(*
+PO TREE :size
+   IF (:size < 5) [
+    FO :size 
+    BACK :size 
+    ]
+   FO :size/3
+   TL 30 
+   TREE :size*2/3 
+   TR 30
+   FO :size/6
+   TR 25 
+   TREE :size/2 left 25
+   FO :size/3
+   TR 25 tree :size/2 
+   TL 25
+   FO :size/6
+   BACK :size
 END
-PD
-CARRE 100
-HOME
-REPEAT 360
-[
-  FORWARD 2
-  TR 1
-]
 
+
+
+PO SQUARE :LENGTH 
+    REPEAT 4 
+    [ 
+       FORWARD :LENGTH 
+        TR 90 
+    ]
+END
+
+PO CIRCLE :STEP
+  REPEAT 360
+  [
+    FORWARD :STEP
+    TR 1
+  ]
+END
+
+PO HEXAGONE :LENGTH
+  REPEAT 6
+  [
+    FORWARD :LENGTH
+    TR 60
+  ]
+END
+
+PO OCTOGONE :LENGTH
+  REPEAT 8
+  [
+    FORWARD :LENGTH
+    TR 45
+  ]
+END
+
+PO STAR :LENGTH
+  REPEAT 5 [ FO :LENGTH TR 144 ]
+END
+
+
+PD
+
+COLOR red
+SQUARE 100
+
+HOME
+COLOR blue
+CIRCLE 2
+
+HOME 
+COLOR green
+HEXAGONE 150
+
+HOME 
+COLOR magenta
+OCTOGONE 75
+
+HOME
+COLOR yellow
+REPEAT 36 
+[
+  TD 10
+  CIRCLE 3
+]
+ 
+
+
+COLOR green
+
+
+STAR 5*100
+
+TREE 150
+*)
+IF 1 < 2 [
+    OCTOGONE 100    
+]

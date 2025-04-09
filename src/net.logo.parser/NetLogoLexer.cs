@@ -4,6 +4,7 @@ using sly.i18n;
 
 namespace net.logo.parser
 {
+    [Lexer(KeyWordIgnoreCase = true)]
     public enum NetLogoLexer
     {
         [AlphaNumId]
@@ -47,11 +48,43 @@ namespace net.logo.parser
         [Keyword("FIN")]
         [Keyword("END")]
         END,
+        
+        [Keyword("SI")]
+        [Keyword("IF")]
+        IF,
+        
         [Sugar("[")]
         RBRACK,
         [Sugar("]")]
         LBRACK,
         [Sugar(":")]
         COLON,
+        [MultiLineComment("(*","*)")]
+        COMMENT,
+        
+        [Sugar("*")]
+        TIMES,
+        [Sugar("/")]
+        DIV,
+        [Sugar("+")]    
+        PLUS,
+        [Sugar("-")]
+        MINUS,
+        [Sugar("<")]
+        LESSER,
+        [Sugar(">")]
+        GREATER,
+        [Sugar("==")]
+        EQUALS, 
+        [Sugar("!=")]
+        [Sugar("<>")]
+        DIFFERENT,
+        [Sugar("!=")]
+        NOT,
+        [Sugar("(")]
+        LPAREN,
+        [Sugar(")")]
+        RPAREN,
+        
     }
 }

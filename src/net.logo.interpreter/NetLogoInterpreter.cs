@@ -1,49 +1,7 @@
-﻿using net.logo.model;
+﻿using System.Linq.Expressions;
+using net.logo.model;
 
 namespace net.logo.interpreter;
-
-public class InterpreterContext
-{
-    private Dictionary<string, double> _variables { get; set; } = new Dictionary<string, double>();
-    
-    private LogoProgram _logoProgram;
-
-    public LogoProgram LogoProgram => _logoProgram;
-    
-    public InterpreterContext(LogoProgram logoProgram) {
-        _variables = new Dictionary<string, double>();
-        _logoProgram = logoProgram;
-    }
-    
-    
-
-    public ProcedureDefinition GetProcedureDefinition(string name) => _logoProgram.GetProcedureDefinition(name);
-    
-    public double GetVariable(string name)
-    {
-        if (_variables.ContainsKey(name))
-        {
-            return _variables[name];
-        }
-        else
-        {
-            throw new Exception($"Variable {name} not found");
-        }
-    }
-    
-    public void SetVariable(string name, double value)
-    {
-        if (_variables.ContainsKey(name))
-        {
-            _variables[name] = value;
-        }
-        else
-        {
-            _variables.Add(name, value);
-        }
-    }
-    
-}
 
 public class NetLogoInterpreter
 {
@@ -102,6 +60,16 @@ public class NetLogoInterpreter
                 RunProcedureCall(procedureCall);
                 break;
             }
+            case ClearInstruction clearInstruction:
+            {
+                _drawer.Clean();
+                break;
+            }
+            case HomeInstruction homeInstruction:
+            {
+                _drawer.Home();
+                break;
+            }
             default:
             {
                 Console.Error.WriteLine($"Unknown instruction: {instruction.GetType().FullName}");
@@ -118,19 +86,9 @@ public class NetLogoInterpreter
         {
             var parameter = definition.Parameters[i];
             var argument = procedureCall.Arguments[i];
-            double value = 0.0;
-            if (argument is Parameter p)
-            {
-                value = _currentContext.GetVariable(p.Name);
-            }
-            else if (argument is Number number)
-            {
-                value = number.Value;
-            }
-            else
-            {
-                throw new Exception($"Unknown argument type: {argument.GetType().FullName}");
-            }
+           
+            var value = Evaluate(argument);
+           
             newContext.SetVariable(parameter.Name, value);
         }
         _contexts.Push(newContext);
@@ -143,7 +101,12 @@ public class NetLogoInterpreter
 
     private void RunRepeatInstruction(RepeatInstruction repeatInstruction)
     {
-        for(int i = 0; i < repeatInstruction.Count; i++)
+        var count = Evaluate(repeatInstruction.Count);
+        if (!count.IsDouble)
+        {
+            return;
+        }
+        for(double i = 0; i < count.DoubleValue; i++)
         {
             foreach (var instruction in repeatInstruction.Instructions)
             {
@@ -198,4 +161,99 @@ public class NetLogoInterpreter
             }
         }
     }
+
+    private void RunIfExpression(IInstruction ifInstruction)
+    {
+        
+    }
+    
+    #region expressions
+
+    public LogoValue Evaluate(IExpression expression)
+    {
+        switch (expression)
+        {
+            case Number n :
+            {
+                return n.Value;
+            }
+            case BooleanBinaryExpression booleanExpression:
+            {
+                return Evaluate(booleanExpression);
+            }
+            case NumericBinaryExpression numericExpression:
+            {
+                return Evaluate(numericExpression);
+            }
+            case NumericUnaryExpression unaryExpression:    
+            {
+                return Evaluate(unaryExpression);
+            }
+            case BooleanUnaryExpression booleanExpression:
+            {
+                return Evaluate(booleanExpression);
+            }
+            default:
+            {
+                throw new Exception($"Unknown expression: {expression.GetType().FullName}");
+            }
+        }
+    }
+
+    public LogoValue Evaluate(BooleanUnaryExpression booleanExpression)
+    {
+        var value = Evaluate(booleanExpression.Value);
+        if (value.IsBool)
+        {
+            return !value;
+        } 
+        throw new Exception($"Unknown boolean expression: {booleanExpression.Value}");
+    }
+
+    public LogoValue Evaluate(NumericUnaryExpression numericExpression)
+    {
+        var value = Evaluate(numericExpression.Value);
+        if (value.IsDouble)
+        {
+            return -value;
+        } 
+        throw new Exception($"Unknown numeric expression: {numericExpression.Value}");
+    }
+
+    public LogoValue Evaluate(BooleanBinaryExpression booleanBinaryExpression)
+    {
+        var left = Evaluate(booleanBinaryExpression.Left);
+        var right = Evaluate(booleanBinaryExpression.Right);
+        switch (booleanBinaryExpression.Operator)
+        {
+            case LogoOperator.EQUALS:
+            {
+                if (left == right)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+            case LogoOperator.DIFFERENT:
+            {
+                return left != right;
+            }
+            case LogoOperator.LESSER:
+            {
+                return left < right;                
+            }
+            case LogoOperator.GREATER:
+            {
+                return left > right;
+            }
+            default:
+            {
+                return false;
+            }
+        }
+    }
+    
+    #endregion
+    
 }

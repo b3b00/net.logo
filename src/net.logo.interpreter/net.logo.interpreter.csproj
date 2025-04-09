@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\net.logo.model\net.logo.model.csproj" />
+    <ProjectReference Include="..\net.logo.parser\net.logo.parser.csproj" />
   </ItemGroup>
 
 </Project>
