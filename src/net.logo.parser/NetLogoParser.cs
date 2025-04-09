@@ -10,68 +10,109 @@ namespace net.logo.parser;
     public class NetLogoParser
     {
         [Production("program : instruction *")]
-        public INetLogoModel program_instruction_(List<INetLogoModel> p0)
+        public INetLogoModel Program(List<INetLogoModel> instructions)
         {
-            return default(INetLogoModel);
+            var procedures = instructions.Where(x => x is ProcedureDefinition).Cast<ProcedureDefinition>().ToList();
+            var insts = instructions.Where(x => !(x is ProcedureDefinition)).Cast<IInstruction>().ToList();
+            return new Program(procedures, insts);
+            ;
         }
 
         [Production("instruction : [ command | repeat | procedure_definition | procedure_call ]")]
-        public INetLogoModel instruction_command_repeat_proceduredefinition_procedurecall_(INetLogoModel instruction)
-        {
-            return default(INetLogoModel);
-        }
+        public INetLogoModel Instruction(INetLogoModel instruction) => instruction;
 
-        [Production("command : [ AV | RE | TD | TG ] expression")]
+        [Production("command : [ FO | BA | TR | TL ] expression")]
         public INetLogoModel MoveCommand(Token<NetLogoLexer> command, INetLogoModel argument)
         {
-            return default(INetLogoModel);
+            switch (command.TokenID) 
+            {
+                case NetLogoLexer.FO:
+                {
+                    return new DrawInstruction(DrawInstructionType.Forward, 0.0);
+                }
+                case NetLogoLexer.BA:
+                {
+                    return new DrawInstruction(DrawInstructionType.Backward, 0.0);
+                }
+                case NetLogoLexer.TR:
+                {
+                    return new DrawInstruction(DrawInstructionType.turnRight, 0.0);
+                }
+                case NetLogoLexer.TL:
+                {
+                    return new DrawInstruction(DrawInstructionType.turnLeft, 0.0);
+                }
+                default: {
+                    return default(INetLogoModel);
+                }
+            }
         }
 
-        [Production("command : [ BC | LC ]")]
+        [Production("command : [ PD | PU ]")]
         public INetLogoModel PenCommand(Token<NetLogoLexer> command)
         {
+            if (command.TokenID != NetLogoLexer.PD)
+            {
+                return new DrawInstruction(DrawInstructionType.PenDown, 0.0);
+            }
+            if (command.TokenID != NetLogoLexer.PU)
+            {
+                return new DrawInstruction(DrawInstructionType.PenUp, 0.0);
+            }
             return default(INetLogoModel);
         }
 
         [Production("command : [ CLEAN | HOME ]")]
         public INetLogoModel GlobalCommand(Token<NetLogoLexer> command)
         {
-            return default(INetLogoModel);
+            if (command.TokenID != NetLogoLexer.CLEAN)
+            {
+                return new ClearInstruction();
+            }
+            if (command.TokenID != NetLogoLexer.HOME)
+            {
+                return new HomeInstruction();
+            }
+
+            return null;
         }
 
         [Production("repeat : REPEAT[d] NUMBER RBRACK[d] instruction * LBRACK[d]")]
         public INetLogoModel Repeat(Token<NetLogoLexer> count,  List<INetLogoModel> instructions)
         {
-            return default(INetLogoModel);
+            return new RepeatInstruction(count.IntValue,instructions.Cast<IInstruction>().ToList());
         }
 
-        [Production("procedure_definition : PO[d] ID parameter * instruction * END[d]")]
+        [Production("procedure_definition : PO[d] ID parameter* instruction * END[d]")]
         public INetLogoModel ProcedureDefinition(Token<NetLogoLexer> id, List<INetLogoModel> erguments, List<INetLogoModel> instructions)
         {
-            return default(INetLogoModel);
+            return new ProcedureDefinition(id.Value, erguments.Cast<Parameter>().ToList(), instructions.Cast<IInstruction>().ToList());
         }
 
         [Production("procedure_call : ID expression *")]
         public INetLogoModel ProcedureCall(Token<NetLogoLexer> procedureName, List<INetLogoModel> parameters)
         {
-            return default(INetLogoModel);
+            return new ProcedureCall(procedureName.Value, parameters.Cast<IExpression>().ToList());
         }
 
         [Production("parameter : COLON[d] ID")]
         public INetLogoModel Parameter( Token<NetLogoLexer> id)
         {
-            return default(INetLogoModel);
+            return new Parameter(id.Value);
+        }
+
+        [Production("command : COLOR[d] ID")]
+        public INetLogoModel Color(Token<NetLogoLexer> id)
+        {
+            return new ColorInstruction(id.Value);
         }
 
         [Production("expression : NUMBER")]
         public INetLogoModel Number(Token<NetLogoLexer> number)
         {
-            return default(INetLogoModel);
+            return new Number(number.DoubleValue);
         }
 
         [Production("expression : parameter")]
-        public INetLogoModel ParameterRef(INetLogoModel expression)
-        {
-            return default(INetLogoModel);
-        }
+        public INetLogoModel ParameterRef(INetLogoModel expression) => expression;
     }

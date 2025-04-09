@@ -13,23 +13,23 @@ namespace net.logo.parser
         [Keyword("AV")]
         [Keyword("FO")]
         [Keyword("FORWARD")]
-        AV,
+        FO,
         [Keyword("RE")]
         [Keyword("BACK")]
         [Keyword("BA")]
-        RE,
+        BA,
         [Keyword("TD")]
         [Keyword("TR")]
-        TD,
+        TR,
         [Keyword("TG")]
         [Keyword("TL")]
-        TG,
+        TL,
         [Keyword("BC")]
-        [Keyword("PU")]
-        BC,
+        [Keyword("PD")]
+        PD,
         [Keyword("LC")]
         [Keyword("PD")]
-        LC,
+        PU,
         [Keyword("NETTOIE")]
         [Keyword("CLEAN")]
         CLEAN,
@@ -39,6 +39,9 @@ namespace net.logo.parser
         [Keyword("REPETE")]
         [Keyword("REPEAT")]
         REPEAT,
+        [Keyword("COULEUR")]
+        [Keyword("COLOR")]
+        COLOR,
         [Keyword("PO")]
         PO,
         [Keyword("FIN")]

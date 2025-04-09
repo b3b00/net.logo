@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using net.logo.interpreter;
 using net.logo.model;
 using net.logo.parser;
 using sly.parser.generator;
@@ -27,6 +28,41 @@ public class Program
     private static int Generate(GenerateOptions opts)
     {
         Console.WriteLine($"generate logo file {opts.LogoFilePath} to {opts.OutputFile}");
+        
+        NetLogoInterpreter interpreter = new NetLogoInterpreter(800, 600);
+        interpreter.PenDown();
+        interpreter.Forward(50);
+        interpreter.TurnRight(90);
+        interpreter.Forward(100);
+        interpreter.TurnRight(90);
+        interpreter.Forward(50);
+        interpreter.TurnRight(90);
+        interpreter.Forward(100);
+        interpreter.Home();
+        interpreter.PenUp();
+        // interpreter.TurnRight(90);
+        // interpreter.Forward(200);
+        interpreter.PenDown();
+        interpreter.Color("red");
+        for (int i = 0; i < 360; i++)
+        {
+            interpreter.Forward(3);
+            interpreter.TurnRight(1);
+        }
+        
+        
+        
+        var svg = interpreter.GetSvg();
+        if (string.IsNullOrEmpty(svg))
+        {
+            Console.Error.WriteLine("SVG is empty.");
+            return 1;
+        }
+        else
+        {
+            File.WriteAllText(opts.OutputFile, svg);
+        }
+        
         return 0;
     }
 
