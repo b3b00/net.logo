@@ -22,7 +22,7 @@ namespace net.logo.parser;
         }
 
         [Production("command : [ AV | RE | TD | TG ] expression")]
-        public INetLogoModel MoveCommand(Token<NetLogoLexer> command, object argument)
+        public INetLogoModel MoveCommand(Token<NetLogoLexer> command, INetLogoModel argument)
         {
             return default(INetLogoModel);
         }
@@ -39,14 +39,14 @@ namespace net.logo.parser;
             return default(INetLogoModel);
         }
 
-        [Production("repeat : REPEAT[d] NUMBER RBRACK[d] instruction * RBRACK[d]")]
-        public INetLogoModel repeat_REPEAT_NUMBER_instruction_(Token<NetLogoLexer> count,  List<INetLogoModel> instructions)
+        [Production("repeat : REPEAT[d] NUMBER RBRACK[d] instruction * LBRACK[d]")]
+        public INetLogoModel Repeat(Token<NetLogoLexer> count,  List<INetLogoModel> instructions)
         {
             return default(INetLogoModel);
         }
 
         [Production("procedure_definition : PO[d] ID parameter * instruction * END[d]")]
-        public INetLogoModel ProcedureDefinition(Token<NetLogoLexer> id, List<object> erguments, List<object> instructions)
+        public INetLogoModel ProcedureDefinition(Token<NetLogoLexer> id, List<INetLogoModel> erguments, List<INetLogoModel> instructions)
         {
             return default(INetLogoModel);
         }
@@ -70,7 +70,7 @@ namespace net.logo.parser;
         }
 
         [Production("expression : parameter")]
-        public INetLogoModel ParameterRef(object p0)
+        public INetLogoModel ParameterRef(INetLogoModel expression)
         {
             return default(INetLogoModel);
         }

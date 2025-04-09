@@ -11,31 +11,43 @@ namespace net.logo.parser
         [Int]
         NUMBER,
         [Keyword("AV")]
+        [Keyword("FO")]
+        [Keyword("FORWARD")]
         AV,
         [Keyword("RE")]
+        [Keyword("BACK")]
+        [Keyword("BA")]
         RE,
         [Keyword("TD")]
+        [Keyword("TR")]
         TD,
         [Keyword("TG")]
+        [Keyword("TL")]
         TG,
         [Keyword("BC")]
+        [Keyword("PU")]
         BC,
         [Keyword("LC")]
+        [Keyword("PD")]
         LC,
         [Keyword("NETTOIE")]
+        [Keyword("CLEAN")]
         CLEAN,
         [Keyword("MAISON")]
+        [Keyword("HOME")]
         HOME,
         [Keyword("REPETE")]
+        [Keyword("REPEAT")]
         REPEAT,
         [Keyword("PO")]
         PO,
         [Keyword("FIN")]
+        [Keyword("END")]
         END,
         [Sugar("[")]
-        LBRACK,
+        RBRACK,
         [Sugar("]")]
-        RBRANCK,
+        LBRACK,
         [Sugar(":")]
         COLON,
     }
