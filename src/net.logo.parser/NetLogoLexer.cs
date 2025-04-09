@@ -56,6 +56,10 @@ namespace net.logo.parser
         [Keyword("ELSE")]
         ELSE,
         
+        [Keyword("random")]
+        [Keyword("rnd")]
+        RANDOM,
+        
         [Sugar("[")]
         LBRACK,
         [Sugar("]")]
@@ -63,6 +67,7 @@ namespace net.logo.parser
         [Sugar(":")]
         COLON,
         [MultiLineComment("(*","*)")]
+        [SingleLineComment("#")]
         COMMENT,
         
         [Sugar("*")]

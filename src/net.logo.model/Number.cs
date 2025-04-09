@@ -15,3 +15,18 @@ public class Number : IExpression
         return _value.ToString();
     }
 }
+
+public class RandomExpression : IExpression
+{
+    Random _random = new Random();
+
+    public RandomExpression()
+    {
+        _random = new Random();
+    }
+    
+    public double Next()
+    {
+        return _random.NextDouble();
+    }
+}

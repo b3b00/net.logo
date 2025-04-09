@@ -171,4 +171,13 @@ public class LogoValue
         }
     }
 
+    public override string ToString()
+    {
+        if (IsDouble)
+            return $"{Type}: {DoubleValue}";
+        else if (IsString) 
+            return $"{Type}: {StringValue}";
+        else 
+            return $"{Type}: {BoolValue}";
+    }
 }

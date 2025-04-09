@@ -12,4 +12,9 @@ public class BooleanBinaryExpression : IExpression
         Left = left;
         Right = right;
     }
+    
+    public override string ToString()
+    {
+        return $"{Left.ToString()} {Operator.ToString()} {Right.ToString()}";
+    }
 }

@@ -1,4 +1,12 @@
 
+PO POLYGONE :SIDES :LENGTH
+  REPEAT :SIDES
+  [
+    FORWARD :LENGTH
+    TR 360/:SIDES
+  ]
+END
+
 PO TREE :size
    IF (:size < 5) 
     [
@@ -13,24 +21,18 @@ PO TREE :size
        TR 30
        FO :size/6
        TR 25 
-       TREE :size/2 left 25
+       TREE :size/2 
+       TL 25
        FO :size/3
-       TR 25 tree :size/2 
+       TR 25 
+       TREE :size/2 
        TL 25
        FO :size/6
        BACK :size
    ]
 END
 
-(*
 
-PO SQUARE :LENGTH 
-    REPEAT 4 
-    [ 
-       FORWARD :LENGTH 
-        TR 90 
-    ]
-END
 
 PO CIRCLE :STEP
   REPEAT 360
@@ -40,13 +42,7 @@ PO CIRCLE :STEP
   ]
 END
 
-PO HEXAGONE :LENGTH
-  REPEAT 6
-  [
-    FORWARD :LENGTH
-    TR 60
-  ]
-END
+
 
 
 
@@ -54,41 +50,14 @@ PO STAR :LENGTH
   REPEAT 5 [ FO :LENGTH TR 144 ]
 END
 
-
-PD
-
-COLOR red
-SQUARE 100
-
-HOME
-COLOR blue
-CIRCLE 2
-
-HOME 
-COLOR green
-HEXAGONE 150
-
-HOME 
-COLOR magenta
-OCTOGONE 75
-
-HOME
-COLOR yellow
-REPEAT 36 
-[
-  TD 10
-  CIRCLE 3
-]
- 
-
-
-COLOR green
-
-
-STAR 5*100
-
-TREE 150
-*)
+PO ARROW
+  FO 100
+  TR 3*45
+  FO 25
+  BA 25
+  TL 6*45
+  FO 25
+END 
 
 PO OCTOGONE :LENGTH
   REPEAT 8
@@ -99,9 +68,41 @@ PO OCTOGONE :LENGTH
 END
 
 PD
-COLOR red
-IF 1 < 2 [
-    OCTOGONE 100    
-]
+
+
+
+(*HOME 
+COLOR blue
+ARROW
+HOME
 COLOR green
-TREE 150
+TR 180
+ARROW
+
+HOME
+COLOR red
+TR 90
+ARROW
+
+HOME
+COLOR purple
+TL 90
+ARROW*)
+
+
+
+#CLEAN 
+COLOR red
+HOME
+TR 180
+#TREE 150
+
+REPEAT 36
+[
+HOME
+    POLYGONE (RANDOM * 4)+4 (RANDOM * 150)
+    TR 10
+]
+    
+
+

@@ -66,6 +66,8 @@ public class NetLogoParser
 
         return default(INetLogoModel);
     }
+    
+    
 
     [Production("command : [ CLEAN | HOME ]")]
     public INetLogoModel GlobalCommand(Token<NetLogoLexer> command)
@@ -116,6 +118,13 @@ public class NetLogoParser
         return new ColorInstruction(id.Value);
     }
 
+    [Operand]
+    [Production("rnd : RANDOM[d]")]
+    public INetLogoModel Random()
+    {
+        return new RandomExpression();
+    }
+    
     [Operand]
     [Production("number : NUMBER")]
     public INetLogoModel Number(Token<NetLogoLexer> number)

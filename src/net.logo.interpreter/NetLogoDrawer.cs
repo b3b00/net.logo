@@ -40,9 +40,6 @@ public class NetLogoDrawer
   
     public void Forward(double l)
     {
-        double hypotenuse = 10.0; // Longueur de l'hypoténuse
-        double angleInDegrees = 30.0; // Angle en degrés
-
         // Convertir l'angle en radians (les fonctions trigonométriques utilisent les radians)
         double angleInRadians = _direction * Math.PI / 180;
 

@@ -85,8 +85,11 @@ public class NetLogoInterpreter
 
     private void RunProcedureCall(ProcedureCall procedureCall)
     {
-        Console.WriteLine($"calling procedure {procedureCall.Name} {string.Join(", ",procedureCall.Arguments.Select(x => x.ToString()))}");
         var definition = _currentContext.GetProcedureDefinition(procedureCall.Name);
+        if (definition == null)
+        {
+            throw new Exception($"unknown procedure {procedureCall.Name}");
+        }
         var newContext = new InterpreterContext(_currentContext.LogoProgram);
         for (int i = 0; i < definition.Parameters.Count; i++)
         {
@@ -136,33 +139,33 @@ public class NetLogoInterpreter
     private void RunDrawInstruction(DrawInstruction drawInstruction)
     {
         double arg = 0.0;
-        if (drawInstruction.Parameter is Parameter p)
+        var value = Evaluate(drawInstruction.Parameter);
+        if (!value.IsDouble)
         {
-            arg = _currentContext.GetVariable(p.Name);
-        }
-        else if (drawInstruction.Parameter is Number number)
-        {
-            arg = number.Value;
+            throw new Exception($"invalid draw parameter {drawInstruction.Parameter}");
         }
         switch (drawInstruction.Type)
         {
             case DrawInstructionType.Backward:
             {
+                _drawer.TurnRight(180);
+                _drawer.Forward(value.DoubleValue);
+                _drawer.TurnRight(180);
                 break;
             }
             case DrawInstructionType.Forward:
             {
-                _drawer.Forward(arg);
+                _drawer.Forward(value.DoubleValue);
                 break;
             }
             case DrawInstructionType.turnLeft:
             {
-                _drawer.TurnLeft(arg);
+                _drawer.TurnLeft(value.DoubleValue);
                 break;
             }
             case DrawInstructionType.turnRight:
             {
-                _drawer.TurnRight(arg);
+                _drawer.TurnRight(value.DoubleValue);
                 break;
             }
         }
@@ -171,6 +174,7 @@ public class NetLogoInterpreter
     private void RunIfExpression(IfInstruction ifInstruction)
     {
         var cond = Evaluate(ifInstruction.Condition);
+        
         if (cond)
         {
             for (int i = 0; i < ifInstruction.ThenInstructions.Count; i++)
@@ -226,6 +230,10 @@ public class NetLogoInterpreter
                 }
                 throw new InvalidOperationException($"unknown variable : {parameter.Name}");
             }
+            case RandomExpression randomExpression:
+            {
+                return randomExpression.Next();
+            }
             default:
             {
                 throw new Exception($"Unknown expression: {expression.GetType().FullName}");
@@ -253,6 +261,67 @@ public class NetLogoInterpreter
         throw new Exception($"Unknown numeric expression: {numericExpression.Value}");
     }
 
+    public LogoValue Evaluate(NumericBinaryExpression numericExpression)
+    {
+        var left = Evaluate(numericExpression.Left);
+        var right = Evaluate(numericExpression.Right);
+        switch (numericExpression.Operator)
+        {
+            case LogoOperator.PLUS: {
+                if (left.IsDouble && right.IsDouble)
+                {
+                    return left.DoubleValue + right.DoubleValue;
+                }
+                else if (left.IsString && right.IsString)
+                {
+                    return left.StringValue + right.StringValue;
+                }
+                else
+                {
+                    throw new Exception($"invalid operation: {left.Type} {numericExpression.Operator} {right.Type}");
+                }
+                break;
+            }
+            case LogoOperator.MINUS:
+            {
+                if (left.IsDouble && right.IsDouble)
+                {
+                    return left.DoubleValue - right.DoubleValue;
+                }
+                else
+                {
+                    throw new Exception($"invalid operation: {left.Type} {numericExpression.Operator} {right.Type}");
+                }
+            }
+            case LogoOperator.TIMES:
+            {
+                if (left.IsDouble && right.IsDouble)
+                {
+                    return left.DoubleValue * right.DoubleValue;
+                }
+                else
+                {
+                    throw new Exception($"invalid operation: {left.Type} {numericExpression.Operator} {right.Type}");
+                }
+            }
+            case LogoOperator.DIV:
+            {
+                if (left.IsDouble && right.IsDouble)
+                {
+                    return left.DoubleValue / right.DoubleValue;
+                }
+                else
+                {
+                    throw new Exception($"invalid operation: {left.Type} {numericExpression.Operator} {right.Type}");
+                }
+            }
+            default:
+            {
+                throw new Exception($"invalid operation: {left.Type} {numericExpression.Operator} {right.Type}");
+            }
+        }
+    } 
+    
     public LogoValue Evaluate(BooleanBinaryExpression booleanBinaryExpression)
     {
         var left = Evaluate(booleanBinaryExpression.Left);
