@@ -10,4 +10,8 @@
     <ProjectReference Include="..\net.logo.model\net.logo.model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="sly" Version="3.6.3" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
 ﻿namespace net.logo.model;
 
-public class Class1
+public interface INetLogoModel
 {
 
 }
