@@ -29,41 +29,84 @@ public class Program
     {
         Console.WriteLine($"generate logo file {opts.LogoFilePath} to {opts.OutputFile}");
         
-        NetLogoInterpreter interpreter = new NetLogoInterpreter(800, 600);
-        interpreter.PenDown();
-        interpreter.Forward(50);
-        interpreter.TurnRight(90);
-        interpreter.Forward(100);
-        interpreter.TurnRight(90);
-        interpreter.Forward(50);
-        interpreter.TurnRight(90);
-        interpreter.Forward(100);
-        interpreter.Home();
-        interpreter.PenUp();
-        // interpreter.TurnRight(90);
-        // interpreter.Forward(200);
-        interpreter.PenDown();
-        interpreter.Color("red");
+        //DrawSvgTest(opts, out var generate)
+        ParserBuilder<NetLogoLexer,INetLogoModel> builder = new ParserBuilder<NetLogoLexer, INetLogoModel>("en");
+        var instance = new NetLogoParser();
+        var built = builder.BuildParser(instance,ParserType.EBNF_LL_RECURSIVE_DESCENT);
+        if (built.IsError)
+        {
+            built.Errors.ForEach(e => Console.Error.WriteLine(e.Message));
+            return 1;
+        }
+
+        if (File.Exists(opts.LogoFilePath))
+        {
+            var content = File.ReadAllText(opts.LogoFilePath);
+            if (string.IsNullOrEmpty(content))
+            {
+                Console.Error.WriteLine("Logo file is empty.");
+            }
+
+            var parsed = built.Result.Parse(content);
+            if (parsed.IsError)
+            {
+                parsed.Errors.ForEach(e => Console.Error.WriteLine(e.ErrorMessage));
+                return 1;
+            }
+
+            var program = parsed.Result as net.logo.model.LogoProgram;
+            NetLogoInterpreter interpreter = new NetLogoInterpreter(1024, 768);
+            interpreter.Run(program);
+            var svg = interpreter.GetSvg();
+            File.WriteAllText(opts.OutputFile, svg);
+            
+            return 0;
+        }
+        else
+        {
+            Console.Error.WriteLine("Logo file doesn't exist.");
+        }
+
+        return 0;
+        
+
+        return 0;
+    }
+
+    private static void DrawSvgTest(GenerateOptions opts)
+    {
+        NetLogoDrawer drawer = new NetLogoDrawer(800, 600);
+        drawer.PenDown();
+        drawer.Forward(50);
+        drawer.TurnRight(90);
+        drawer.Forward(100);
+        drawer.TurnRight(90);
+        drawer.Forward(50);
+        drawer.TurnRight(90);
+        drawer.Forward(100);
+        drawer.Home();
+        drawer.PenUp();
+        // drawer.TurnRight(90);
+        // drawer.Forward(200);
+        drawer.PenDown();
+        drawer.Color("red");
         for (int i = 0; i < 360; i++)
         {
-            interpreter.Forward(3);
-            interpreter.TurnRight(1);
+            drawer.Forward(3);
+            drawer.TurnRight(1);
         }
         
         
         
-        var svg = interpreter.GetSvg();
+        var svg = drawer.GetSvg();
         if (string.IsNullOrEmpty(svg))
         {
             Console.Error.WriteLine("SVG is empty.");
-            return 1;
         }
         else
         {
             File.WriteAllText(opts.OutputFile, svg);
         }
-        
-        return 0;
     }
 
     private static int Compile(CompileOptions opts)

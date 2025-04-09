@@ -1,14 +1,16 @@
+
+
 namespace net.logo.model;
 
 public class DrawInstruction : IInstruction
 {
     private DrawInstructionType _type;
-    private readonly double _parameter;
+    private readonly IExpression _parameter;
 
     public DrawInstructionType Type => _type;
-    public double Parameter => _parameter;
+    public IExpression Parameter => _parameter;
 
-    public DrawInstruction(DrawInstructionType type, double parameter)
+    public DrawInstruction(DrawInstructionType type, IExpression parameter)
     {
         _type = type;
         _parameter = parameter;

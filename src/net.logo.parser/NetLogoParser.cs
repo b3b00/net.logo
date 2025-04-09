@@ -14,7 +14,7 @@ namespace net.logo.parser;
         {
             var procedures = instructions.Where(x => x is ProcedureDefinition).Cast<ProcedureDefinition>().ToList();
             var insts = instructions.Where(x => !(x is ProcedureDefinition)).Cast<IInstruction>().ToList();
-            return new Program(procedures, insts);
+            return new LogoProgram(procedures, insts);
             ;
         }
 
@@ -22,25 +22,26 @@ namespace net.logo.parser;
         public INetLogoModel Instruction(INetLogoModel instruction) => instruction;
 
         [Production("command : [ FO | BA | TR | TL ] expression")]
-        public INetLogoModel MoveCommand(Token<NetLogoLexer> command, INetLogoModel argument)
+        public INetLogoModel MoveCommand(Token<NetLogoLexer> command, INetLogoModel arg)
         {
+            var argument = arg as IExpression; 
             switch (command.TokenID) 
             {
                 case NetLogoLexer.FO:
                 {
-                    return new DrawInstruction(DrawInstructionType.Forward, 0.0);
+                    return new DrawInstruction(DrawInstructionType.Forward, argument);
                 }
                 case NetLogoLexer.BA:
                 {
-                    return new DrawInstruction(DrawInstructionType.Backward, 0.0);
+                    return new DrawInstruction(DrawInstructionType.Backward, argument);
                 }
                 case NetLogoLexer.TR:
                 {
-                    return new DrawInstruction(DrawInstructionType.turnRight, 0.0);
+                    return new DrawInstruction(DrawInstructionType.turnRight, argument);
                 }
                 case NetLogoLexer.TL:
                 {
-                    return new DrawInstruction(DrawInstructionType.turnLeft, 0.0);
+                    return new DrawInstruction(DrawInstructionType.turnLeft, argument);
                 }
                 default: {
                     return default(INetLogoModel);
@@ -53,11 +54,11 @@ namespace net.logo.parser;
         {
             if (command.TokenID != NetLogoLexer.PD)
             {
-                return new DrawInstruction(DrawInstructionType.PenDown, 0.0);
+                return new PenInstruction(true);
             }
             if (command.TokenID != NetLogoLexer.PU)
             {
-                return new DrawInstruction(DrawInstructionType.PenUp, 0.0);
+                return new PenInstruction(false);
             }
             return default(INetLogoModel);
         }
