@@ -70,6 +70,11 @@ public class NetLogoInterpreter
                 _drawer.Home();
                 break;
             }
+            case IfInstruction ifInstruction:
+            {
+                RunIfExpression(ifInstruction);
+                break;
+            }
             default:
             {
                 Console.Error.WriteLine($"Unknown instruction: {instruction.GetType().FullName}");
@@ -80,6 +85,7 @@ public class NetLogoInterpreter
 
     private void RunProcedureCall(ProcedureCall procedureCall)
     {
+        Console.WriteLine($"calling procedure {procedureCall.Name} {string.Join(", ",procedureCall.Arguments.Select(x => x.ToString()))}");
         var definition = _currentContext.GetProcedureDefinition(procedureCall.Name);
         var newContext = new InterpreterContext(_currentContext.LogoProgram);
         for (int i = 0; i < definition.Parameters.Count; i++)
@@ -162,9 +168,28 @@ public class NetLogoInterpreter
         }
     }
 
-    private void RunIfExpression(IInstruction ifInstruction)
+    private void RunIfExpression(IfInstruction ifInstruction)
     {
-        
+        var cond = Evaluate(ifInstruction.Condition);
+        if (cond)
+        {
+            for (int i = 0; i < ifInstruction.ThenInstructions.Count; i++)
+            {
+                var instruction = ifInstruction.ThenInstructions[i];
+                RunInstruction(instruction);
+            }
+        }
+        else
+        {
+            if (ifInstruction.ElseInstructions != null && ifInstruction.ElseInstructions.Count > 0)
+            {
+                for (int i = 0; i < ifInstruction.ElseInstructions.Count; i++)
+                {
+                    var instruction = ifInstruction.ElseInstructions[i];
+                    RunInstruction(instruction);
+                }
+            }
+        }
     }
     
     #region expressions
@@ -192,6 +217,14 @@ public class NetLogoInterpreter
             case BooleanUnaryExpression booleanExpression:
             {
                 return Evaluate(booleanExpression);
+            }
+            case Parameter parameter:
+            {
+                if (_currentContext.TryGetVariable(parameter.Name, out var variable))
+                {
+                    return variable;
+                }
+                throw new InvalidOperationException($"unknown variable : {parameter.Name}");
             }
             default:
             {

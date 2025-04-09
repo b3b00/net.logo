@@ -7,7 +7,7 @@ namespace net.logo.parser
     [Lexer(KeyWordIgnoreCase = true)]
     public enum NetLogoLexer
     {
-        [AlphaNumId]
+        [AlphaId]
         ID,
         [Int]
         NUMBER,
@@ -52,11 +52,14 @@ namespace net.logo.parser
         [Keyword("SI")]
         [Keyword("IF")]
         IF,
+        [Keyword("SINON")]
+        [Keyword("ELSE")]
+        ELSE,
         
         [Sugar("[")]
-        RBRACK,
-        [Sugar("]")]
         LBRACK,
+        [Sugar("]")]
+        RBRACK,
         [Sugar(":")]
         COLON,
         [MultiLineComment("(*","*)")]

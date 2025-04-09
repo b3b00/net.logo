@@ -9,4 +9,9 @@ public class Parameter : IExpression
     {
         _name = name;
     }
+
+    public override string ToString()
+    {
+        return $"::{_name}::";
+    }
 }

@@ -83,7 +83,7 @@ public class NetLogoParser
         return null;
     }
 
-    [Production($"repeat : REPEAT[d] {nameof(NetLogoParser)}_expressions RBRACK[d] instruction * LBRACK[d]")]
+    [Production($"repeat : REPEAT[d] {nameof(NetLogoParser)}_expressions LBRACK[d] instruction * RBRACK[d]")]
     public INetLogoModel Repeat(INetLogoModel count, List<INetLogoModel> instructions)
     {
         return new RepeatInstruction(count as IExpression, instructions.Cast<IInstruction>().ToList());
@@ -163,7 +163,7 @@ public class NetLogoParser
                 throw new InvalidOperationException($"Invalid operator {operatorToken.TokenID}");
             }
         }
-        return new BooleanBinaryExpression(op, left as IExpression, right as IExpression);
+        return new NumericBinaryExpression(op, left as IExpression, right as IExpression);
     }
 
     [Prefix((int)NetLogoLexer.MINUS, Associativity.Right, 100)]
@@ -218,10 +218,22 @@ public class NetLogoParser
         return new BooleanUnaryExpression(LogoOperator.NOT, value as IExpression);
     }
     
+    [Production($"if : IF[d] {nameof(NetLogoParser)}_expressions LBRACK[d] instruction* RBRACK[d] ELSE[d] LBRACK[d] instruction* RBRACK[d]")]
+    public INetLogoModel If(INetLogoModel condition, List<INetLogoModel> instructions, List<INetLogoModel> elseInstructions)
+    {
+        return new IfInstruction(condition, instructions, elseInstructions);
+    }
+    
     [Production($"if : IF[d] {nameof(NetLogoParser)}_expressions LBRACK[d] instruction * RBRACK[d]")]
     public INetLogoModel If(INetLogoModel condition, List<INetLogoModel> instructions)
     {
-        return new IfInstruction(condition, instructions);
+        return new IfInstruction(condition, instructions, null);
     }
+    
+    // [Production("else : ELSE[d] LBRACK[d] instruction * RBRACK[d] ")]
+    // public INetLogoModel Else(List<INetLogoModel> instructions)
+    // {
+    //     return new ElseInstruction(instructions.Cast<IInstruction>().ToList());
+    // }
 }
 

@@ -1,24 +1,28 @@
-(*
+
 PO TREE :size
-   IF (:size < 5) [
-    FO :size 
-    BACK :size 
+   IF (:size < 5) 
+    [
+        FO :size 
+        BACK :size 
     ]
-   FO :size/3
-   TL 30 
-   TREE :size*2/3 
-   TR 30
-   FO :size/6
-   TR 25 
-   TREE :size/2 left 25
-   FO :size/3
-   TR 25 tree :size/2 
-   TL 25
-   FO :size/6
-   BACK :size
+    ELSE 
+    [
+       FO :size/3
+       TL 30 
+       TREE :size * 2 / 3 
+       TR 30
+       FO :size/6
+       TR 25 
+       TREE :size/2 left 25
+       FO :size/3
+       TR 25 tree :size/2 
+       TL 25
+       FO :size/6
+       BACK :size
+   ]
 END
 
-
+(*
 
 PO SQUARE :LENGTH 
     REPEAT 4 
@@ -44,13 +48,7 @@ PO HEXAGONE :LENGTH
   ]
 END
 
-PO OCTOGONE :LENGTH
-  REPEAT 8
-  [
-    FORWARD :LENGTH
-    TR 45
-  ]
-END
+
 
 PO STAR :LENGTH
   REPEAT 5 [ FO :LENGTH TR 144 ]
@@ -91,6 +89,19 @@ STAR 5*100
 
 TREE 150
 *)
+
+PO OCTOGONE :LENGTH
+  REPEAT 8
+  [
+    FORWARD :LENGTH
+    TR 45
+  ]
+END
+
+PD
+COLOR red
 IF 1 < 2 [
     OCTOGONE 100    
 ]
+COLOR green
+TREE 150

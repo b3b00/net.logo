@@ -20,6 +20,11 @@ public class InterpreterContext
     public ProcedureDefinition GetProcedureDefinition(string name) => _logoProgram.GetProcedureDefinition(name);
     
     public LogoValue GetVariable(string name) => _variables[name];
+
+    public bool TryGetVariable(string name, out LogoValue value)
+    {
+        return _variables.TryGetValue(name, out value);
+    }
     
     public double GetDoubleVariable(string name)
     {
