@@ -19,7 +19,7 @@ public class NetLogoParser
         ;
     }
 
-    [Production("instruction : [ command | repeat | procedure_definition | procedure_call | if ]")]
+    [Production("instruction : [ command | repeat | procedure_definition | procedure_call | if | assign ]")]
     public INetLogoModel Instruction(INetLogoModel instruction) => instruction;
 
     [Production($"command : [ FO | BA | TR | TL ] {nameof(NetLogoParser)}_expressions")]
@@ -85,6 +85,12 @@ public class NetLogoParser
         return null;
     }
 
+    [Production($"assign :  SET[d] ID {nameof(NetLogoParser)}_expressions")]
+    public INetLogoModel Assign(Token<NetLogoLexer> id, INetLogoModel expression)
+    {
+        return new Assign(id.Value,expression as IExpression);
+    }
+    
     [Production($"repeat : REPEAT[d] {nameof(NetLogoParser)}_expressions LBRACK[d] instruction * RBRACK[d]")]
     public INetLogoModel Repeat(INetLogoModel count, List<INetLogoModel> instructions)
     {

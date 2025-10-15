@@ -90,19 +90,81 @@ TL 90
 ARROW*)
 
 
+PO RANDOMCOLOR
+  COLOR gray
+  SET coco (RANDOM * 5)
+  IF :coco < 1 
+  [
+    COLOR red
+  ]
+  else 
+  [
+      IF :coco < 2 
+        [
+          COLOR blue
+        ]
+      else 
+      [ 
+        IF :coco < 3 
+          [
+            COLOR green
+          ]
+        else [
+          IF :coco < 4 
+            [
+              COLOR yellow
+            ]
+            else [
+            IF :coco < 5 
+              [
+                COLOR purple
+              ]
+              ]
+        ]
+      ]
+  ]
+END
 
+
+(*
 #CLEAN 
 COLOR red
 HOME
-TR 180
-#TREE 150
+TR 90
+*)
+PO TREES :trees
+    REPEAT :trees 
+    [
+        HOME
+        TR :i * (360/:trees)
+        RANDOMCOLOR
+        TREE 150
+    ]
+END   
 
+TREES 7
+
+(*
+HOME
+TR 0
+TREE 150
+HOME
+TR 90
+TREE 150
+HOME
+TR 180
+TREE 150
+HOME
+TR 270
+TREE 150*)
+(*
 REPEAT 36
 [
 HOME
     POLYGONE (RANDOM * 4)+4 (RANDOM * 150)
     TR 10
 ]
+*)
     
 
 

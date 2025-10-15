@@ -66,6 +66,9 @@ namespace net.logo.parser
         RBRACK,
         [Sugar(":")]
         COLON,
+        
+        [Keyword("SET")]
+        SET,
         [MultiLineComment("(*","*)")]
         [SingleLineComment("#")]
         COMMENT,

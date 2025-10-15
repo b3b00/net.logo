@@ -75,6 +75,11 @@ public class NetLogoInterpreter
                 RunIfExpression(ifInstruction);
                 break;
             }
+            case Assign assign:
+            {
+                RunAssignement(assign);
+                break;
+            }
             default:
             {
                 Console.Error.WriteLine($"Unknown instruction: {instruction.GetType().FullName}");
@@ -108,6 +113,12 @@ public class NetLogoInterpreter
         _contexts.Pop();
     }
 
+
+    private void RunAssignement(Assign assign)
+    {
+        var value = Evaluate(assign.Expression);
+        _currentContext.SetVariable(assign.Variable,value);
+    }
     private void RunRepeatInstruction(RepeatInstruction repeatInstruction)
     {
         var count = Evaluate(repeatInstruction.Count);
@@ -117,6 +128,7 @@ public class NetLogoInterpreter
         }
         for(double i = 0; i < count.DoubleValue; i++)
         {
+            _currentContext.SetVariable("i",i);
             foreach (var instruction in repeatInstruction.Instructions)
             {
                 RunInstruction(instruction);
