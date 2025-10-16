@@ -1,0 +1,51 @@
+﻿@page "/About"
+@using System.Reflection
+@using sly.lexer
+<h3>About</h3>
+
+@code {
+    
+}
+<div>
+    <div style="margin-bottom: 100px">
+        <h2 style="display: inline ">Csly Viewer v @Version - </h2><span>(<a href="http://github.com/b3b00/net.logo/commit/@Hash">@Hash</a></span>
+    </div>
+    <ul>
+        <li><a href="https://github.com/b3b00/csly">CSLY @CslyVersion</a> : the parser generator</li>
+    </ul>
+</div>
+
+@code
+{
+    
+    protected string Version = "";
+    
+    protected string Hash = "";
+
+    protected string CslyVersion = "";
+
+    protected string CslyCliVersion = "";
+    protected override async void OnInitialized()
+    {
+        var csly = typeof(Token<>).Assembly;
+        var cslyName = csly.GetName();
+        CslyVersion = cslyName.Version?.ToString() ?? "";
+        
+        var version = ""; 
+            
+        var appAssembly = this.GetType().Assembly;
+        var infoVerAttr = (AssemblyInformationalVersionAttribute)appAssembly
+            .GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault();
+
+        if (infoVerAttr != null && infoVerAttr.InformationalVersion.Length > 6)
+        {
+            // something like "1.0+a34a913742f8845d3da5309b7b17242222d41a21";
+            version = infoVerAttr.InformationalVersion;
+        }
+
+// get git hash
+        Hash = version.Substring( version.IndexOf('+') + 1);
+// get version 
+        Version = version.Substring(0, version.IndexOf('+'));
+    }
+}

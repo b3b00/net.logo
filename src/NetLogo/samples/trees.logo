@@ -1,0 +1,73 @@
+﻿PO TREE :size
+   IF (:size < 5) 
+    [
+        FO :size 
+        BACK :size 
+    ]
+    ELSE 
+    [
+       FO :size/3
+       TL 30 
+       TREE :size * 2 / 3 
+       TR 30
+       FO :size/6
+       TR 25 
+       TREE :size/2 
+       TL 25
+       FO :size/3
+       TR 25 
+       TREE :size/2 
+       TL 25
+       FO :size/6
+       BACK :size
+   ]
+END
+
+
+PO RANDOMCOLOR
+  COLOR gray
+  SET coco (RANDOM * 5)
+  IF :coco < 1 
+  [
+    COLOR red
+  ]
+  else 
+  [
+      IF :coco < 2 
+        [
+          COLOR blue
+        ]
+      else 
+      [ 
+        IF :coco < 3 
+          [
+            COLOR green
+          ]
+        else [
+          IF :coco < 4 
+            [
+              COLOR yellow
+            ]
+            else [
+            IF :coco < 5 
+              [
+                COLOR purple
+              ]
+              ]
+        ]
+      ]
+  ]
+END
+
+PO TREES :trees
+    REPEAT :trees 
+    [
+        HOME
+        TR :i * (360/:trees)
+        RANDOMCOLOR
+        TREE 150
+    ]
+END   
+
+
+TREES 7

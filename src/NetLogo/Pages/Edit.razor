@@ -1,0 +1,178 @@
+﻿@page "/Edit"
+@inject ILogoContext logoContext;
+@inject NavigationManager navigationManager
+
+<div>
+    
+    <div>
+        
+        <h1>@logoContext.SampleName</h1>
+        <h3>@logoContext.SampleDescription</h3>
+
+        <div style="display: block">
+            <label for="preset">grammars : </label>
+            <select class="form-control d-flex" @onchange="SelectSample" id="preset">
+                @foreach (var template in logoContext.GetSamples())
+                {
+                    <option value=@template.name>@(!string.IsNullOrEmpty(template.name) ? $"{template.name} - {template.description}" : "")</option>
+                }
+            </select>
+        </div>
+
+
+        
+        
+
+        <div id="graph">
+            <div id="output">
+                <div id="error">
+                    @foreach (var message in messages)
+                    {
+                    <p style="color:black; background-color: lawngreen ">@message</p>
+                    }
+
+                    @foreach (var error in errors)
+                    {
+                    <p style="color:black; background-color: darksalmon ">@error</p>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+       
+
+        <div class="input" style="display: flex;flex-direction: column">
+            <div style="flex-direction: row; display: flex">
+                <textarea cols="4" @bind="Lines"></textarea>
+                <textarea style="overflow: hidden; width: 100%; height: 1301px;" i d="inputBox" maxlength="2000" spellcheck="false" @bind="Source"  />
+            </div>
+
+        </div>
+
+       
+
+    </div>
+
+
+   
+</div>
+
+@code {
+    
+    private const string csly_share_mark = "CSLY-MARK#";
+
+    private const string csly_share_delimiter = "$#$";
+
+    [Parameter] public string? Title { get; set; }
+
+    private string nameSpace;
+
+    private string outputType;
+
+    private bool HideGenerate = true;
+
+
+    private string lexerSource = "";
+
+    private string parserSource = "";
+    
+    private bool HideExtract = true;
+
+    private bool ActionDisabled => string.IsNullOrEmpty(logoContext.Source);
+    
+    private IDictionary<string,long> Timings { get; set; }
+    
+
+    private string Source
+    {
+        get => logoContext.Source ?? "";
+        set
+        {
+            logoContext.Source = value;
+            CleanOutput();
+        }
+    }
+    
+    private string Lines { get; set; }
+    
+    protected override async void OnInitialized()
+    {
+        Console.WriteLine(navigationManager.Uri);
+        Uri uri = new Uri(navigationManager.Uri);
+        Console.WriteLine(uri.Fragment);
+        
+        int length = 0;
+        if (uri.Fragment != null && uri.Fragment.Length > 1 && uri.Fragment[0] == '#')
+        {
+            try
+            {
+                var encodedData = uri.Fragment.Substring(1); 
+                byte[] data = Convert.FromBase64String(encodedData);
+                string content = System.Text.Encoding.UTF8.GetString(data);
+                if (!string.IsNullOrEmpty(content) && content.StartsWith(csly_share_mark))
+                {
+                    content = content.Substring(csly_share_mark.Length);
+                    var items = content.Split(csly_share_delimiter);
+                    if (items.Length == 1)
+                    {
+                        Source = content;
+                    }
+
+                    if (items.Length == 2)
+                    {
+                        Source = items[0];
+                        logoContext.Source = items[1];
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine("share content is not base64 encoded");
+            }
+        }
+    }
+    
+    
+
+    
+
+
+
+
+   
+
+
+    
+
+
+    private List<string> messages = new List<string>();
+    private List<string> errors = new List<string>();
+    
+    
+
+    public async void SelectSample(ChangeEventArgs e)
+    {
+        errors.Clear();
+        messages.Clear();
+        string sampleName = e.Value?.ToString() ?? "";
+        logoContext.SetSample(sampleName);
+        StateHasChanged();
+    }
+
+    private void CleanOutput()
+    {
+        errors.Clear();
+        messages.Clear();
+        if (Timings != null)
+        {
+            Timings.Clear();
+        }
+
+        StateHasChanged();
+    }
+
+
+    
+}
