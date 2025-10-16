@@ -51,7 +51,6 @@ public class NetLogoDrawer
         if (_isPenDown)
         {
             var line = Svg.Line(_currentX, _currentY, _currentX + adjacent, _currentY + opposite, _color);
-            Console.WriteLine($"LINE : {line}");
         _builder.AppendLine(line);
         }
         _currentX += adjacent;
