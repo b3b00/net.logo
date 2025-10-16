@@ -1,4 +1,5 @@
 ﻿@page "/Edit"
+@using NetLogo.services
 @inject ILogoContext logoContext;
 @inject NavigationManager navigationManager
 
@@ -61,29 +62,8 @@
 
 @code {
     
-    private const string csly_share_mark = "CSLY-MARK#";
-
-    private const string csly_share_delimiter = "$#$";
 
     [Parameter] public string? Title { get; set; }
-
-    private string nameSpace;
-
-    private string outputType;
-
-    private bool HideGenerate = true;
-
-
-    private string lexerSource = "";
-
-    private string parserSource = "";
-    
-    private bool HideExtract = true;
-
-    private bool ActionDisabled => string.IsNullOrEmpty(logoContext.Source);
-    
-    private IDictionary<string,long> Timings { get; set; }
-    
 
     private string Source
     {
@@ -99,39 +79,6 @@
     
     protected override async void OnInitialized()
     {
-        Console.WriteLine(navigationManager.Uri);
-        Uri uri = new Uri(navigationManager.Uri);
-        Console.WriteLine(uri.Fragment);
-        
-        int length = 0;
-        if (uri.Fragment != null && uri.Fragment.Length > 1 && uri.Fragment[0] == '#')
-        {
-            try
-            {
-                var encodedData = uri.Fragment.Substring(1); 
-                byte[] data = Convert.FromBase64String(encodedData);
-                string content = System.Text.Encoding.UTF8.GetString(data);
-                if (!string.IsNullOrEmpty(content) && content.StartsWith(csly_share_mark))
-                {
-                    content = content.Substring(csly_share_mark.Length);
-                    var items = content.Split(csly_share_delimiter);
-                    if (items.Length == 1)
-                    {
-                        Source = content;
-                    }
-
-                    if (items.Length == 2)
-                    {
-                        Source = items[0];
-                        logoContext.Source = items[1];
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("share content is not base64 encoded");
-            }
-        }
     }
     
     
@@ -165,11 +112,6 @@
     {
         errors.Clear();
         messages.Clear();
-        if (Timings != null)
-        {
-            Timings.Clear();
-        }
-
         StateHasChanged();
     }
 

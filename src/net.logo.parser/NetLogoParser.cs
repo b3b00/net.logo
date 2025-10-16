@@ -54,12 +54,12 @@ public class NetLogoParser
     [Production("command : [ PD | PU ]")]
     public INetLogoModel PenCommand(Token<NetLogoLexer> command)
     {
-        if (command.TokenID != NetLogoLexer.PD)
+        if (command.TokenID == NetLogoLexer.PD)
         {
             return new PenInstruction(true);
         }
 
-        if (command.TokenID != NetLogoLexer.PU)
+        if (command.TokenID == NetLogoLexer.PU)
         {
             return new PenInstruction(false);
         }

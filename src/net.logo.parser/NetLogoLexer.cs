@@ -27,9 +27,11 @@ namespace net.logo.parser
         TL,
         [Keyword("BC")]
         [Keyword("PD")]
+        [Keyword("DOWN")]
         PD,
         [Keyword("LC")]
-        [Keyword("PD")]
+        [Keyword("PU")]
+        [Keyword("UP")]
         PU,
         [Keyword("NETTOIE")]
         [Keyword("CLEAN")]

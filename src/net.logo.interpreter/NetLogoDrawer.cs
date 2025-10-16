@@ -30,7 +30,7 @@ public class NetLogoDrawer
         Clean();
     }
 
-    #region frawing primitives
+    #region drawing primitives
     
     public string GetSvg()
     {
@@ -50,7 +50,9 @@ public class NetLogoDrawer
         // calculer la longueur du grand coté d'un
         if (_isPenDown)
         {
-        _builder.AppendLine(Svg.Line(_currentX, _currentY, _currentX+adjacent, _currentY+opposite, _color));
+            var line = Svg.Line(_currentX, _currentY, _currentX + adjacent, _currentY + opposite, _color);
+            Console.WriteLine($"LINE : {line}");
+        _builder.AppendLine(line);
         }
         _currentX += adjacent;
         _currentY += opposite;
@@ -86,6 +88,7 @@ public class NetLogoDrawer
 
     public void Clean()
     {
+        Console.WriteLine("DRAWER.CLEAN() !");
         _color = "black";
         _builder = new StringBuilder();
         _builder.AppendLine(@$"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""no""?>
