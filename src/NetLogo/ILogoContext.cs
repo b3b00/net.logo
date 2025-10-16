@@ -1,4 +1,4 @@
-﻿namespace netlogo;
+﻿namespace NetLogo;
 
 public interface ILogoContext
 {

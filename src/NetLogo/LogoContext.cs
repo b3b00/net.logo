@@ -1,6 +1,6 @@
 ﻿using SharpFileSystem.FileSystems;
 
-namespace netlogo;
+namespace NetLogo;
 
 public class LogoContext : ILogoContext
 {

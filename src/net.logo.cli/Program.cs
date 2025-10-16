@@ -60,7 +60,6 @@ public class Program
             var svg = interpreter.GetSvg();
             File.WriteAllText(opts.OutputFile, svg);
             
-            return 0;
         }
         else
         {
@@ -68,9 +67,7 @@ public class Program
         }
 
         return 0;
-        
 
-        return 0;
     }
 
     private static void DrawSvgTest(GenerateOptions opts)
