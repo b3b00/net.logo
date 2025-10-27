@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace net.logo.interpreter;
 
 public class Svg
@@ -5,7 +7,9 @@ public class Svg
     
     private static string ToEnDecimal(double d)
     {
-        return d.ToString("F").Replace(",", ".");
+        string formatted = d.ToString("F", CultureInfo.InvariantCulture);
+        return formatted;
+        // Résultat : "1234.56"
     }
     public static string Line(double x1, double y1, double x2, double y2, string color = "black", string dash = null)
     {
